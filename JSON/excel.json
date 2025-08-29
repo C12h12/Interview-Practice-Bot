@@ -1,0 +1,217 @@
+{
+  "skill": "Excel",
+  "description": "Excel is a spreadsheet application used for calculations, data analysis, visualization, reporting, and automation. It provides formulas, functions, charts, pivot tables, macros, and tools for effective data management.",
+  "topics": [
+    "Basic Excel Functions",
+    "Formulas and Calculations",
+    "Cell References",
+    "Formatting",
+    "Conditional Formatting",
+    "Data Validation",
+    "Charts and Graphs",
+    "Pivot Tables",
+    "Macros and VBA",
+    "Data Analysis Tools",
+    "Tables and Named Ranges",
+    "Lookup Functions (VLOOKUP, HLOOKUP, XLOOKUP)",
+    "Text Functions",
+    "Date and Time Functions",
+    "Financial Functions",
+    "Logical Functions (IF, AND, OR)",
+    "Error Handling",
+    "Power Query",
+    "Power Pivot",
+    "Collaboration and Protection",
+    "Keyboard Shortcuts"
+  ],
+  "functions": [
+    {
+      "name": "Basic Excel Functions",
+      "description": "Simple arithmetic and utility functions in Excel.",
+      "sub_functions": [
+        {"name": "SUM", "description": "Adds a range of numbers.", "examples": ["SUM(A1:A10)", "SUM(B2:B20)"]},
+        {"name": "AVERAGE", "description": "Calculates average of a range.", "examples": ["AVERAGE(C1:C10)"]},
+        {"name": "COUNT", "description": "Counts numeric cells in a range.", "examples": ["COUNT(E1:E10)"]},
+        {"name": "MIN/MAX", "description": "Returns minimum or maximum value in a range.", "examples": ["MIN(A1:A10)", "MAX(B1:B20)"]}
+      ]
+    },
+    {
+      "name": "Formulas and Calculations",
+      "description": "Using formulas and operators for calculations.",
+      "sub_functions": [
+        {"name": "Basic arithmetic", "description": "Addition, subtraction, multiplication, division.", "examples": ["=A1+B1", "=C1*D1"]},
+        {"name": "Percentages", "description": "Calculate percentages using formulas.", "examples": ["=B1/A1", "=C1*10%"]},
+        {"name": "Order of operations", "description": "Follow precedence: parentheses, exponents, multiplication/division, addition/subtraction.", "examples": ["=(A1+B1)*C1"]}
+      ]
+    },
+    {
+      "name": "Cell References",
+      "description": "Using references in formulas for dynamic calculations.",
+      "sub_functions": [
+        {"name": "Relative References", "description": "Changes when copied.", "examples": ["=A1+B1 copied to next row"]},
+        {"name": "Absolute References", "description": "Fixed reference using $ sign.", "examples": ["=$A$1+$B$1"]},
+        {"name": "Mixed References", "description": "Combination of relative and absolute.", "examples": ["=$A1+B$1"]}
+      ]
+    },
+    {
+      "name": "Formatting",
+      "description": "Formatting cells, rows, columns, and sheets.",
+      "sub_functions": [
+        {"name": "Cell formatting", "description": "Change font, size, color, and borders.", "examples": ["Format Cells > Font > Bold"]},
+        {"name": "Number formatting", "description": "Format numbers, currency, percentages, dates.", "examples": ["Format Cells > Number > Currency"]},
+        {"name": "Conditional formatting", "description": "Format cells based on rules.", "examples": ["Highlight cells > Greater than 100"]}
+      ]
+    },
+    {
+      "name": "Conditional Formatting",
+      "description": "Highlight cells or rows based on conditions.",
+      "sub_functions": [
+        {"name": "Highlight Cell Rules", "description": "Highlight based on numeric/text conditions.", "examples": ["Cells > Greater than 50"]},
+        {"name": "Top/Bottom Rules", "description": "Highlight top or bottom values.", "examples": ["Top 10 Items"]},
+        {"name": "Data Bars, Color Scales, Icon Sets", "description": "Visualize values.", "examples": ["Conditional Formatting > Data Bars"]}
+      ]
+    },
+    {
+      "name": "Data Validation",
+      "description": "Control what users can enter in cells.",
+      "sub_functions": [
+        {"name": "Drop-down lists", "description": "Provide selectable options.", "examples": ["Data Validation > List"]},
+        {"name": "Number limits", "description": "Restrict number ranges.", "examples": ["Data Validation > Whole Number > between 1 and 100"]},
+        {"name": "Custom formulas", "description": "Advanced validation using formulas.", "examples": ["=ISNUMBER(A1)"]}
+      ]
+    },
+    {
+      "name": "Charts and Graphs",
+      "description": "Visual representation of data.",
+      "sub_functions": [
+        {"name": "Column Chart", "description": "Displays data as vertical bars.", "examples": ["Insert > Column Chart"]},
+        {"name": "Line Chart", "description": "Displays trends over time.", "examples": ["Insert > Line Chart"]},
+        {"name": "Pie Chart", "description": "Shows proportion of categories.", "examples": ["Insert > Pie Chart"]},
+        {"name": "Combo Chart", "description": "Combines two chart types.", "examples": ["Insert > Combo Chart"]}
+      ]
+    },
+    {
+      "name": "Pivot Tables",
+      "description": "Summarize and analyze large datasets quickly.",
+      "sub_functions": [
+        {"name": "Creating Pivot Table", "description": "Insert > PivotTable > Choose fields.", "examples": ["Drag fields to Rows, Columns, Values"]},
+        {"name": "Grouping", "description": "Group dates or numeric ranges.", "examples": ["Group by month/year"]},
+        {"name": "Pivot Charts", "description": "Visualize pivot data.", "examples": ["Insert PivotChart"]}
+      ]
+    },
+    {
+      "name": "Macros and VBA",
+      "description": "Automate repetitive tasks using Macros and Visual Basic for Applications.",
+      "sub_functions": [
+        {"name": "Recording Macro", "description": "Record actions to replay later.", "examples": ["View > Macros > Record Macro"]},
+        {"name": "Running Macro", "description": "Execute saved macro.", "examples": ["Developer > Macros > Run"]},
+        {"name": "VBA Editor", "description": "Write custom VBA code.", "examples": ["Alt + F11"]}
+      ]
+    },
+    {
+      "name": "Data Analysis Tools",
+      "description": "Built-in tools for analyzing data.",
+      "sub_functions": [
+        {"name": "Goal Seek", "description": "Find input value for desired output.", "examples": ["Data > What-If Analysis > Goal Seek"]},
+        {"name": "Scenario Manager", "description": "Compare multiple scenarios.", "examples": ["Data > What-If Analysis > Scenario Manager"]},
+        {"name": "Solver", "description": "Optimize target value with constraints.", "examples": ["Data > Solver"]}
+      ]
+    },
+    {
+      "name": "Tables and Named Ranges",
+      "description": "Organize data for better management and formulas.",
+      "sub_functions": [
+        {"name": "Create Table", "description": "Insert > Table.", "examples": ["Convert range to table for structured references"]},
+        {"name": "Named Ranges", "description": "Assign names to cell ranges.", "examples": ["Formulas > Name Manager"]}
+      ]
+    },
+    {
+      "name": "Lookup Functions (VLOOKUP, HLOOKUP, XLOOKUP)",
+      "description": "Functions to search and retrieve data.",
+      "sub_functions": [
+        {"name": "VLOOKUP", "description": "Vertical lookup.", "examples": ["VLOOKUP(101, A1:C10, 2, FALSE)"]},
+        {"name": "HLOOKUP", "description": "Horizontal lookup.", "examples": ["HLOOKUP(101, A1:C10, 2, FALSE)"]},
+        {"name": "XLOOKUP", "description": "Flexible lookup.", "examples": ["XLOOKUP(101, A1:A10, B1:B10)"]}
+      ]
+    },
+    {
+      "name": "Text Functions",
+      "description": "Functions for manipulating text.",
+      "sub_functions": [
+        {"name": "CONCAT", "description": "Join strings together.", "examples": ["CONCAT(A1, ' ', B1)"]},
+        {"name": "LEFT", "description": "Extract left characters.", "examples": ["LEFT(A1, 5)"]},
+        {"name": "RIGHT", "description": "Extract right characters.", "examples": ["RIGHT(B1, 3)"]},
+        {"name": "LEN", "description": "Length of string.", "examples": ["LEN(A1)"]}
+      ]
+    },
+    {
+      "name": "Date and Time Functions",
+      "description": "Functions for handling dates and times.",
+      "sub_functions": [
+        {"name": "TODAY", "description": "Returns current date.", "examples": ["TODAY()"]},
+        {"name": "NOW", "description": "Returns current date and time.", "examples": ["NOW()"]},
+        {"name": "DATE", "description": "Creates date from year, month, day.", "examples": ["DATE(2025,8,28)"]},
+        {"name": "DAY/MONTH/YEAR", "description": "Extract day, month, or year.", "examples": ["DAY(A1)", "MONTH(A1)", "YEAR(A1)"]}
+      ]
+    },
+    {
+      "name": "Financial Functions",
+      "description": "Functions used in finance calculations.",
+      "sub_functions": [
+        {"name": "PMT", "description": "Calculate loan payments.", "examples": ["PMT(rate, nper, pv)"]},
+        {"name": "FV", "description": "Future value of investment.", "examples": ["FV(rate, nper, pmt)"]}
+      ]
+    },
+    {
+      "name": "Logical Functions (IF, AND, OR)",
+      "description": "Decision-making formulas.",
+      "sub_functions": [
+        {"name": "IF", "description": "Conditional logic.", "examples": ["IF(A1>10,'Pass','Fail')"]},
+        {"name": "AND", "description": "All conditions true.", "examples": ["AND(A1>0,B1<10)"]},
+        {"name": "OR", "description": "Any condition true.", "examples": ["OR(A1>0,B1<10)"]}
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "description": "Functions to handle errors.",
+      "sub_functions": [
+        {"name": "IFERROR", "description": "Return value if formula errors.", "examples": ["IFERROR(A1/B1,0)"]},
+        {"name": "ISERROR", "description": "Check if value is error.", "examples": ["ISERROR(A1/B1)"]}
+      ]
+    },
+    {
+      "name": "Power Query",
+      "description": "Data extraction, transformation, and loading tool.",
+      "sub_functions": [
+        {"name": "Get Data", "description": "Import data from different sources.", "examples": ["Data > Get Data > From File"]},
+        {"name": "Transform Data", "description": "Clean and reshape data.", "examples": ["Power Query Editor > Transform"]}
+      ]
+    },
+    {
+      "name": "Power Pivot",
+      "description": "Data modeling and advanced analytics tool.",
+      "sub_functions": [
+        {"name": "Data Model", "description": "Create relationships between tables.", "examples": ["Power Pivot > Manage Data Model"]},
+        {"name": "DAX Functions", "description": "Advanced calculations.", "examples": ["SUMX, CALCULATE"]}
+      ]
+    },
+    {
+      "name": "Collaboration and Protection",
+      "description": "Tools to share, protect, and track changes in Excel.",
+      "sub_functions": [
+        {"name": "Protect Sheet", "description": "Restrict editing.", "examples": ["Review > Protect Sheet"]},
+        {"name": "Track Changes", "description": "Monitor edits.", "examples": ["Review > Track Changes"]},
+        {"name": "Share Workbook", "description": "Collaborate with others.", "examples": ["File > Share"]}
+      ]
+    },
+    {
+      "name": "Keyboard Shortcuts",
+      "description": "Efficient navigation and actions using keys.",
+      "sub_functions": [
+        {"name": "Copy/Paste", "description": "Ctrl+C, Ctrl+V", "examples": ["Copy: Ctrl+C", "Paste: Ctrl+V"]},
+        {"name": "Undo/Redo", "description": "Ctrl+Z, Ctrl+Y", "examples": ["Undo: Ctrl+Z", "Redo: Ctrl+Y"]},
+        {"name": "Navigation", "description": "Move between cells quickly.", "examples": ["Ctrl+Arrow Keys"]}
+      ]
+    }
+  ]
+}
