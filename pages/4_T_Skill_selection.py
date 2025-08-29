@@ -36,6 +36,15 @@ chat_pages = {
 }
 
 # ----------------------------
+# Cache JSON loader
+# ----------------------------
+@st.cache_data
+def load_skill_file(file_path: str):
+    """Load and parse a skill JSON file, cache so it’s reused across reruns."""
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+# ----------------------------
 # Step 1: Select skill
 # ----------------------------
 selected_skill = st.selectbox("Select a skill to load:", missing_tech)
@@ -49,13 +58,12 @@ if st.button("Load Skill File"):
 
     if file_path and chat_page:
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                st.session_state.skill_data = json.load(f)  # store JSON in session
+            st.session_state.skill_data = load_skill_file(file_path)  # ✅ cached
             st.session_state.selected_skill = selected_skill
             st.success(f"Loaded JSON for {selected_skill} successfully!")
 
             # Navigate directly to the correct chat page
-            st.switch_page(chat_page)     # now uses the correct file path
+            st.switch_page(chat_page)
 
         except FileNotFoundError:
             st.error(f"File not found: {file_path}")

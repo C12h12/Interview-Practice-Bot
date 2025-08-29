@@ -1,15 +1,15 @@
-# ---------- utils_skills.py (you can paste into your streamlit file too) ----------
+# ---------- utils_skills.py (with Streamlit caching) ----------
 import re
 import fitz  # PyMuPDF
 import docx2txt
 import spacy
 from rapidfuzz import process, fuzz
 from sentence_transformers import SentenceTransformer, util
+import streamlit as st
 
-# 1) Read text from uploaded files
-import fitz  # PyMuPDF
-import docx2txt
 
+# 1) Read text from uploaded files (cached so same file isn’t parsed again)
+@st.cache_data
 def read_file(file):
     name = file.name.lower()
 
@@ -33,13 +33,15 @@ def read_file(file):
         return ""
 
 
-# 2) Load NLP + embedder once (cache in Streamlit outside if you want)
+# 2) Load NLP + embedder once (expensive → cache as a resource)
+@st.cache_resource
 def load_nlp_and_embedder():
     nlp = spacy.load("en_core_web_sm")
     embedder = SentenceTransformer("all-MiniLM-L6-v2")
     return nlp, embedder
 
-# 3) Build/Load your skills catalog (extend with ESCO/O*NET later)
+
+# 3) Skills catalog (static → no caching needed)
 BASE_SKILLS = [
     # --- technical ---
     "Python", "Java", "C++", "C", "Go", "JavaScript", "TypeScript", "React",
@@ -58,17 +60,18 @@ BASE_SKILLS = [
     "Data Analysis", "Data Visualization", "Power BI", "Tableau", "Excel",
 ]
 
+
 def normalize(s: str) -> str:
     s = re.sub(r"[\(\)\[\]\{\}\.,/\\\-_\+]+", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
     return s
+
 
 # 4) Candidate generation with spaCy (noun chunks + ents + frequent n-grams)
 def generate_candidates(text: str, nlp):
     text_clean = re.sub(r"[^\x00-\x7F]+", " ", text)  # remove weird unicode
     doc = nlp(text_clean)
 
-    # noun chunks + named entities + fine POS patterns
     cand = set()
     for chunk in doc.noun_chunks:
         c = normalize(chunk.text)
@@ -80,7 +83,7 @@ def generate_candidates(text: str, nlp):
         if 2 <= len(c) <= 50:
             cand.add(c)
 
-    # Add uni/bi/tri-grams from tokens (good for short skills like "Git")
+    # Add uni/bi/tri-grams
     toks = [t.text for t in doc if not t.is_space]
     for n in (1, 2, 3):
         for i in range(len(toks) - n + 1):
@@ -88,20 +91,19 @@ def generate_candidates(text: str, nlp):
             if 2 <= len(phrase) <= 50:
                 cand.add(phrase)
 
-    # Heuristic filter: drop very generic words
     bad = {"experience", "project", "projects", "knowledge", "skills", "framework", "tools", "technology", "technologies", "years"}
     candidates = {c for c in cand if c.lower() not in bad}
     return candidates
 
+
 # 5) Smart matching: exact → fuzzy → semantic
 def smart_match_skills(candidates, catalog, embedder, fuzzy_cutoff=90, semantic_threshold=0.72):
-    # Fast exact case-insensitive map
     cat_norm_map = {normalize(s).lower(): s for s in catalog}
     cat_norm_list = list(cat_norm_map.keys())
 
     matched = set()
 
-    # Pre-embed catalog for semantic step
+    # Pre-embed catalog once (cached if embedder object is cached)
     cat_embeddings = embedder.encode(cat_norm_list, convert_to_tensor=True, normalize_embeddings=True)
 
     for cand in candidates:
@@ -111,7 +113,7 @@ def smart_match_skills(candidates, catalog, embedder, fuzzy_cutoff=90, semantic_
             matched.add(cat_norm_map[c_norm])
             continue
 
-        # fuzzy (top-3 suggestions)
+        # fuzzy
         fuzzy_hits = process.extract(c_norm, cat_norm_list, scorer=fuzz.WRatio, limit=3)
         high = [k for k, score, _ in fuzzy_hits if score >= fuzzy_cutoff]
         if high:
@@ -119,7 +121,7 @@ def smart_match_skills(candidates, catalog, embedder, fuzzy_cutoff=90, semantic_
                 matched.add(cat_norm_map[k])
             continue
 
-        # semantic: compare candidate to catalog with embeddings
+        # semantic
         c_emb = embedder.encode(c_norm, convert_to_tensor=True, normalize_embeddings=True)
         cos = util.cos_sim(c_emb, cat_embeddings)[0]
         top_idx = int(cos.argmax())
@@ -128,6 +130,7 @@ def smart_match_skills(candidates, catalog, embedder, fuzzy_cutoff=90, semantic_
             matched.add(cat_norm_map[cat_norm_list[top_idx]])
 
     return matched
+
 
 # 6) One-call extractor
 def extract_skills_smart(text, catalog=None, nlp=None, embedder=None,

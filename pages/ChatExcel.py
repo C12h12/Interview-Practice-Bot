@@ -35,7 +35,7 @@ if not st.session_state.chat_history[selected_skill]:
     st.session_state.chat_history[selected_skill].append({"bot": welcome_msg})
 
 # ============================================================
-# 1. Build Knowledge Base
+# 1. Build Knowledge Base (Cached)
 # ============================================================
 @st.cache_resource
 def build_knowledge_base(skill_data):
@@ -70,8 +70,9 @@ def build_knowledge_base(skill_data):
 faq_documents, document_metadata, sentence_model, document_embeddings = build_knowledge_base(skill_data)
 
 # ============================================================
-# 2. Retrieval
+# 2. Retrieval (Cached)
 # ============================================================
+@st.cache_data(show_spinner=False)
 def retrieve_relevant_documents(query: str, top_k: int = 3, similarity_threshold: float = 0.1):
     query_embedding = sentence_model.encode([query], convert_to_numpy=True)
     similarities = cosine_similarity(query_embedding, document_embeddings)[0]
@@ -90,29 +91,27 @@ def retrieve_relevant_documents(query: str, top_k: int = 3, similarity_threshold
     return results
 
 # ============================================================
-# 3. Mistral API
+# 3. Mistral API (Cached)
 # ============================================================
 MISTRAL_API_KEY = "0C9jyqEUMOzvkQzgrVV8mascDfrfU1Tf"   # 🔑 replace with your key
 API_URL = "https://api.mistral.ai/v1/chat/completions"
 
+@st.cache_data(show_spinner=False)
 def call_mistral_api(prompt: str, model="mistral-small-latest", temperature=0.8, max_tokens=350):
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
         "Content-Type": "application/json"
     }
     payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": 
-             "You are an Excel interview coach. "
-             "Your role is to ask the user interview-style questions about Excel "
-             "based on provided context. Do not just explain the answers. "
-             "First, ask the user a question."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": temperature,
-        "max_tokens": max_tokens
-    }
+    "model": model,
+    "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},  # required
+        {"role": "user", "content": prompt}
+    ],
+    "temperature": temperature,
+    "max_tokens": max_tokens
+}
+
 
     for attempt in range(3):  # retry if rate-limited
         response = requests.post(API_URL, headers=headers, json=payload)
@@ -133,11 +132,20 @@ def generate_interview_question(query: str):
     context = "No relevant info found." if not retrieved_docs else "\n\n".join([doc["document"] for doc in retrieved_docs])
 
     prompt = f"""
-New context data for user input:
-{context}
-User Input: {query}
+You are an Excel interview coach.
+Context (Excel knowledge): {context}
+
+User just answered: {query}
+
+Now:
+- Ask the NEXT interview-style question.
+- Keep it clear and concise (1 sentence).
+- Do NOT add praise or feedback.
+- Do NOT repeat "Great!".
+Return ONLY the question.
 """
     return call_mistral_api(prompt)
+
 
 # ============================================================
 # 4b. LLM Feedback on User Answer
@@ -146,44 +154,52 @@ def generate_feedback(user_input: str):
     retrieved_docs = retrieve_relevant_documents(user_input, top_k=3)
     context = "No relevant info found." if not retrieved_docs else "\n\n".join([doc["document"] for doc in retrieved_docs])
 
-    feedback_prompt = f"""
-    You are an Excel interview coach.  
-    Your job is to review the user's answer, check it against the correct knowledge, 
-    and provide feedback.
+    feedback_prompt = f"""  
+You are an Excel interview coach.
+Context (Excel knowledge): {context}
 
-    Context (Excel knowledge base):
-    {context}
+User's Answer:
+{user_input}
 
-    User's Answer:
-    {user_input}
-
-    Instructions:
-    1. If the answer is correct → Acknowledge it and add one improvement/tip.  
-    2. If the answer is partially correct → Highlight mistakes and give the correct explanation.  
-    3. If the answer is wrong → Correct it politely with the right knowledge.  
-    4. Keep response short, clear, and conversational.
-    """
-
+Instructions:
+- Give feedback on the user's answer only.
+- Keep it **1–2 sentences, clear and conversational**.
+- Do NOT start with "Great!" or repeat "Great! Great!".
+- If correct → acknowledge briefly and add a tip.
+- If partially correct → point out gaps and clarify.
+- If wrong → politely correct with the right knowledge.
+Return ONLY feedback (no follow-up question).
+"""
     return call_mistral_api(feedback_prompt)
 
 
 # ============================================================
-# 5. Chat Interface
+# 5. Chat Interface (Fixed to avoid duplicate responses)
 # ============================================================
+
+# Store last processed input
+if "last_user_input" not in st.session_state:
+    st.session_state.last_user_input = None
+
 user_input = st.text_input("💬 Your Answer or Ask Me:", key=f"user_input_{selected_skill}")
-if user_input:
+
+if user_input and user_input != st.session_state.last_user_input:
+    # Step 1: Save user input
     st.session_state.chat_history[selected_skill].append({"user": user_input})
 
-    # 🔹feedback
-    # 🔹 First give feedback on the user's answer
+    # Step 2: Generate feedback
     feedback = generate_feedback(user_input)
     st.session_state.chat_history[selected_skill].append({"bot": f"📝 Feedback: {feedback}"})
 
-    # 🔹 Then continue with the next interview-style question
+    # Step 3: Generate next question
     next_question = generate_interview_question(user_input)
     st.session_state.chat_history[selected_skill].append({"bot": f"❓ Next Question: {next_question}"})
 
+    # Update last processed input
+    st.session_state.last_user_input = user_input
+
     st.rerun()
+
 
 # ============================================================
 # 6. Display Chat with Styling
@@ -194,14 +210,9 @@ for i, msg in enumerate(st.session_state.chat_history[selected_skill]):
     else:
         bot_msg = msg["bot"]
 
-        # Feedback messages (blue box)
         if bot_msg.startswith("📝 Feedback"):
-            st.info(bot_msg)
-
-        # Next Question messages (green box)
+            st.info(bot_msg)      # blue box
         elif bot_msg.startswith("❓ Next Question"):
-            st.success(bot_msg)
-
-        # Other bot messages (default bubble)
+            st.success(bot_msg)   # green box
         else:
             message(bot_msg, key=f"bot_{i}")
