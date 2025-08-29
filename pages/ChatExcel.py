@@ -148,21 +148,30 @@ Return ONLY the question.
 
 
 # ============================================================
-# 4b. LLM Feedback on User Answer
+# 4b. LLM Feedback on User Answer (Q + A only)
 # ============================================================
-def generate_feedback(user_input: str):
-    retrieved_docs = retrieve_relevant_documents(user_input, top_k=3)
-    context = "No relevant info found." if not retrieved_docs else "\n\n".join([doc["document"] for doc in retrieved_docs])
+def generate_feedback(user_input: str, selected_skill: str):
+    # Find the last asked question
+    last_question = None
+    for msg in reversed(st.session_state.chat_history[selected_skill]):
+        if "bot" in msg and msg["bot"].startswith("❓ Next Question"):
+            last_question = msg["bot"].replace("❓ Next Question:", "").strip()
+            break
 
-    feedback_prompt = f"""  
+    # If no previous question, skip feedback
+    if not last_question:
+        return None  
+
+    feedback_prompt = f"""
 You are an Excel interview coach.
-Context (Excel knowledge): {context}
+Interview Question:
+{last_question}
 
 User's Answer:
 {user_input}
 
 Instructions:
-- Give feedback on the user's answer only.
+- Give feedback on how well the user's answer addressed the specific question above.
 - Keep it **1–2 sentences, clear and conversational**.
 - Do NOT start with "Great!" or repeat "Great! Great!".
 - If correct → acknowledge briefly and add a tip.
@@ -187,9 +196,10 @@ if user_input and user_input != st.session_state.last_user_input:
     # Step 1: Save user input
     st.session_state.chat_history[selected_skill].append({"user": user_input})
 
-    # Step 2: Generate feedback
-    feedback = generate_feedback(user_input)
-    st.session_state.chat_history[selected_skill].append({"bot": f"📝 Feedback: {feedback}"})
+    # Step 2: Generate feedback only if a question exists
+    feedback = generate_feedback(user_input, selected_skill)
+    if feedback:  # Only add if not None
+        st.session_state.chat_history[selected_skill].append({"bot": f"📝 Feedback: {feedback}"})
 
     # Step 3: Generate next question
     next_question = generate_interview_question(user_input)
