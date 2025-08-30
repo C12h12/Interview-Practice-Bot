@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🛤 Choose Your Preparation Path</h2>
+
+<a href="{{ url_for('hr') }}"><button>💼 HR Interview</button></a>
+<a href="{{ url_for('technical') }}"><button>🖥 Technical Interview</button></a>
+{% endblock %}

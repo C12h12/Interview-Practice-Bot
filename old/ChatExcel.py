@@ -183,6 +183,22 @@ Return ONLY feedback (no follow-up question).
 
 
 # ============================================================
+# 6. Display Chat with Styling
+# ============================================================
+for i, msg in enumerate(st.session_state.chat_history[selected_skill]):
+    if "user" in msg:
+        message(msg["user"], is_user=True, key=f"user_{i}")
+    else:
+        bot_msg = msg["bot"]
+
+        if bot_msg.startswith("📝 Feedback"):
+            st.info(bot_msg)      # blue box
+        elif bot_msg.startswith("❓ Next Question"):
+            st.success(bot_msg)   # green box
+        else:
+            message(bot_msg, key=f"bot_{i}")
+
+# ============================================================
 # 5. Chat Interface (Fixed to avoid duplicate responses)
 # ============================================================
 
@@ -211,18 +227,3 @@ if user_input and user_input != st.session_state.last_user_input:
     st.rerun()
 
 
-# ============================================================
-# 6. Display Chat with Styling
-# ============================================================
-for i, msg in enumerate(st.session_state.chat_history[selected_skill]):
-    if "user" in msg:
-        message(msg["user"], is_user=True, key=f"user_{i}")
-    else:
-        bot_msg = msg["bot"]
-
-        if bot_msg.startswith("📝 Feedback"):
-            st.info(bot_msg)      # blue box
-        elif bot_msg.startswith("❓ Next Question"):
-            st.success(bot_msg)   # green box
-        else:
-            message(bot_msg, key=f"bot_{i}")

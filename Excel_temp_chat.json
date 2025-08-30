@@ -1,0 +1,20 @@
+{
+  "skill": "Excel",
+  "conversation": [
+    {
+      "bot": "\ud83d\udc4b Hello! I\u2019m your Excel coach.\nYou can ask me anything, prepare for interviews, solve your doubts\u2026"
+    },
+    {
+      "user": "okay"
+    },
+    {
+      "bot": "Great! Let's start with a common Excel interview question to get you warmed up:\n\n**Question:** How would you explain the difference between a relative and an absolute cell reference to someone who is new to Excel?\n\nTake your time to think about it, and when you're ready, share your explanation. I'm here to provide feedback and guide you through the process."
+    },
+    {
+      "user": "no i want to learn about excel formulas"
+    },
+    {
+      "bot": "I understand that you'd like to focus on Excel formulas. Let's dive into that topic with a common interview question:\n\n**Question:** Can you explain the difference between the VLOOKUP and INDEX-MATCH functions in Excel? When would you use one over the other?\n\nTake your time to think about it, and when you're ready, share your explanation. I'm here to provide feedback and guide you through the process.\n\nIf you'd prefer to start with a specific formula or have a particular doubt, please let me know, and we can adjust accordingly."
+    }
+  ]
+}

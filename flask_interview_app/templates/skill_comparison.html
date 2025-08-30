@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📊 Skill Comparison</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <label>Upload Job Description (PDF/DOCX/TXT):</label><br>
+    <input type="file" name="jd_file" accept=".pdf,.docx,.txt" required><br><br>
+
+    <label>Upload Resume (PDF/DOCX/TXT):</label><br>
+    <input type="file" name="resume_file" accept=".pdf,.docx,.txt" required><br><br>
+
+    <button type="submit">Compare Skills ➡️</button>
+</form>
+{% endblock %}

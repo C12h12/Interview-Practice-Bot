@@ -34,7 +34,7 @@ else:
     if missing_tech:  # only if there are missing skills
         if st.button("▶️ Start Quiz"):
             st.session_state.page_index = 3  # or any index for the quiz page
-            st.switch_page("pages/4_T_Skill_selection.py")  # replace with your actual quiz page file
+            st.switch_page("pages/4_2_skill_selection.py")  # replace with your actual quiz page file
     else:
         st.info("All skills are present! No quiz needed.")
 

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🖥 Technical Interview Preparation</h2>
+
+<h3>✅ Technical Skills you already have:</h3>
+<p>{{ present_tech | join(", ") if present_tech else "None" }}</p>
+
+<h3>❌ Technical Skills you should focus on:</h3>
+<p>{{ missing_tech | join(", ") if missing_tech else "None" }}</p>
+
+{% if missing_tech %}
+  <a href="{{ url_for('chatbot', skill='Technical') }}"><button>▶️ Start Quiz / Chatbot</button></a>
+{% else %}
+  <p>🎉 All skills are present! No quiz needed.</p>
+{% endif %}
+
+<a href="{{ url_for('prep_path') }}"><button>⬅️ Back</button></a>
+{% endblock %}
